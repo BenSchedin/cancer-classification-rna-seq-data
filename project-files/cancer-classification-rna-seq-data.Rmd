@@ -1,5 +1,5 @@
 ---
-title: "Cancer Classification From RNA-Seq Data"
+title: "Cancer Classification With RNA-Seq Data"
 author: "B. D. Schedin"
 date: "`r format(Sys.time(), '%B %d, %Y')`"
 output: 
@@ -8,7 +8,47 @@ output:
 ---
 
 ```{r setup, include=FALSE}
+
+# Global chunk options
 knitr::opts_chunk$set(echo = TRUE)
+
+# Project paths
+projRoot <- "C:/_git_/cancer-classification-rna-seq-data/"
+
+# Project libraries
+library(tidyverse)
+
 ```
 
-# Dataset
+# Appendix
+
+## Dataset Information
+
+## Preprocessing
+```{r, eval=FALSE}
+
+# Loading raw data
+rawData <- read.csv(paste0(projRoot, "data/raw/data.csv"))
+rawLabels <- read.csv(paste0(projRoot, "data/raw/labels.csv"))
+
+# Setting sample IDs to row names
+data <- rawData
+rownames(data) <- rawData$X
+data <- data %>% select(-X)
+
+labels <- rawLabels
+rownames(labels) <- rawLabels$X
+labels <- labels %>% select(-X)
+
+# Checking for missing values
+missing <- sapply(data, function(x) sum(is.na(x)))
+length(missing[missing > 0])
+
+# Checking for (and removing) genes inactive in more than 25% of samples
+preCounts <- map_int(data, function(x) sum(x == 0))
+new <- data[, c(TRUE, preCounts < 1)]
+
+```
+
+
+## Dimension Reduction vs. Random Sampling

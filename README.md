@@ -1,2 +1,2 @@
-# cancer-classification-rna-seq-data
- Exploration of cancer classification methods using RNA-Seq data.
+# Cancer Classification With RNA-Seq Data
+ Exploration and comparison of cancer classification methods applied to RNA-Seq data.
