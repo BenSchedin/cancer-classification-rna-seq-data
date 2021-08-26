@@ -42,13 +42,41 @@ labels <- labels %>% select(-X)
 
 # Checking for missing values
 missing <- sapply(data, function(x) sum(is.na(x)))
-length(missing[missing > 0])
+cat("Found", length(missing[missing > 0]), "columns with missing values.\n")
 
-# Checking for (and removing) genes inactive in more than 25% of samples
+# Removing genes which are not expressed for more than 25% of samples
 preCounts <- map_int(data, function(x) sum(x == 0))
-new <- data[, c(TRUE, preCounts < 1)]
+data <- data[colMeans(data == 0) <= 0.25]
+postCounts <- map_int(data, function(x) sum(x == 0))
+
+cat("Removed", length(preCounts) - length(postCounts), "columns containing genes unexpressed in more than 25% of samples.\n")
+
+# Scaling features
+data <- scale(data)
+
+# Exporting preprocessed data to file
+save("data", "labels", file=paste0(projRoot, "data/processed/rna-seq-preprocessed"))
+
+```
+
+## Dimension Reduction vs. Random Sampling
+```{r}
+
+# Loading preprocessed data
+load(paste0(projRoot, "data/processed/rna-seq-preprocessed"))
+data <- as.data.frame(data)
 
 ```
 
 
-## Dimension Reduction vs. Random Sampling
+
+
+
+
+
+
+
+
+
+
+
