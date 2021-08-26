@@ -17,10 +17,35 @@ projRoot <- "C:/_git_/cancer-classification-rna-seq-data/"
 
 # Project libraries
 library(tidyverse)
+library(e1071)
 
 ```
 
-# Appendix
+# 1. Abstract
+
+
+
+
+
+# 2. Introduction
+
+
+
+
+
+# 3. Methods and Results
+
+
+
+
+
+# 4. Conclusion
+
+
+
+
+
+# 5. Appendix
 
 ## Dataset Information
 
@@ -31,7 +56,7 @@ library(tidyverse)
 rawData <- read.csv(paste0(projRoot, "data/raw/data.csv"))
 rawLabels <- read.csv(paste0(projRoot, "data/raw/labels.csv"))
 
-# Setting sample IDs to row names
+# Setting sample IDs to row names, removing sample ID columns
 data <- rawData
 rownames(data) <- rawData$X
 data <- data %>% select(-X)
@@ -59,12 +84,36 @@ save("data", "labels", file=paste0(projRoot, "data/processed/rna-seq-preprocesse
 
 ```
 
-## Dimension Reduction vs. Random Sampling
+## Principal Component Analysis and Random Sampling
 ```{r}
+
+# Setting seed for reproducibility
+set.seed(123)
 
 # Loading preprocessed data
 load(paste0(projRoot, "data/processed/rna-seq-preprocessed"))
 data <- as.data.frame(data)
+
+# Random sample of 1000 genes
+sampleIndices <- sample(1:dim(data)[[2]], 1000, replace=FALSE)
+sample1000 <- data[, sampleIndices]
+
+# PCA on all features
+pca <- prcomp(data)
+plot(pca, main="Scree Plot", xlab="PCs")
+
+cumVar <- cumsum((nrow(data) - 1) * ((pca$sdev)^2)/sum(data^2))
+cumVarData <- data.frame(PC = 1:length(cumVar), CumulativeVariance = cumVar)
+
+ggplot(cumVarData, aes(x=PC, y=CumulativeVariance)) +
+  geom_point() +
+  geom_line() +
+  theme_bw() +
+  labs(title="Component Cumulative Variance", x="PC", y="Variance")
+ggsave(paste0(projRoot, "figures/pca-cumulative-variance.png"), device="png", width=5, height=4)
+
+# Number of features to reach 50% cumulative variance
+cat("Number of components required to reach 50% cumulative variance:", length(cumVar[cumVar <= 0.50]), "\n")
 
 ```
 
