@@ -42,6 +42,7 @@ library(e1071)
 # 4. Criticisms of Methodology
 try different cost and gamma parameters for svm tune
 try linear and radial svm kernels
+add k-fold cv to nn implementation
 
 
 
@@ -92,19 +93,15 @@ save("data", "labels", file=paste0(projRoot, "data/processed/rna-seq-preprocesse
 
 ```
 
-## Principal Component Analysis and Random Sampling
+## Principal Component Analysis
 ```{r}
 
-# Setting seed for reproducibility
+# Setting chunk seed
 set.seed(123)
 
 # Loading preprocessed data
 load(paste0(projRoot, "data/processed/rna-seq-preprocessed"))
 data <- as.data.frame(data)
-
-# Random sample of 1000 genes
-sampleIndices <- sample(1:dim(data)[[2]], 1000, replace=FALSE)
-sample1000 <- data[, sampleIndices]
 
 # PCA on all features
 pca <- prcomp(data)
@@ -122,6 +119,9 @@ ggsave(paste0(projRoot, "figures/pca-cumulative-variance.png"), device="png", wi
 
 # Number of features to reach 50% cumulative variance
 cat("Number of components required to reach 50% cumulative variance:", length(cumVar[cumVar <= 0.50]), "\n")
+
+# Extracting the first 8 principal components
+pca8 <- as.data.frame(pca$x[, 1:8])
 
 ```
 
@@ -143,18 +143,18 @@ cat("Number of components required to reach 50% cumulative variance:", length(cu
 ## Support Vector Machines
 ```{r}
 
-# Setting seed for the chunk
+# Setting chunk seed
 set.seed(123)
 
-# Extracting the first 8 principal components
-geneScores <- as.data.frame(pca$x[, 1:8])
-geneScores$Class <- as.factor(labels$Class)
+# Preparing principal component data for use with SVM
+svmData <- pca8
+svmData$Class <- as.factor(labels$Class)
 
 # Splitting data into training and test sets, 75-25 split
-trainIndices <- sample(1:nrow(geneScores), 0.75*nrow(geneScores), replace=FALSE)
+trainIndices <- sample(1:nrow(svmData), 0.75*nrow(svmData), replace=FALSE)
 
-train <- geneScores[trainIndices,]
-test <- geneScores[-trainIndices,]
+train <- svmData[trainIndices,]
+test <- svmData[-trainIndices,]
 
 # Training model and tuning hyperparameters with e1071::tune
 tuneRadialSVM <- tune(svm,
@@ -170,7 +170,15 @@ summary(tuneRadialSVM)
 bestRadialSVM <- tuneRadialSVM$best.model
 summary(bestRadialSVM)
 
-#
+# Testing best model and displaying results
+yPred <- predict(bestRadialSVM, test[,1:8])
+
+predTable <- table(predicted=yPred, truth=test$Class)
+predTable
+
+# Writing table to .csv for reporting
+predTable <- as.data.frame.matrix(predTable)
+write.csv(predTable, file=paste0(projRoot, "tables/radial-svm.csv"))
 
 ```
 
@@ -186,6 +194,21 @@ summary(bestRadialSVM)
 
 ## Neural Network
 ```{r}
+
+# Setting chunk seed
+set.seed(123)
+
+# Preparing principal component data for use with NN
+nnData <- pca8
+nnLabels <- labels
+
+# Splitting data into train and test sets, 75-25 split
+trainIndices <- sample(1:nrow(nnData), nrow(nnData), replace=FALSE)
+
+trainData <- nnData[trainIndices,]
+trainLabels <- as.data.frame(nnLabels[trainIndices,])
+testData <- nnData[-trainIndices,]
+testLabels <- nnLabels[-trainIndices,]
 
 ```
 
