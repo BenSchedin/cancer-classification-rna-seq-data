@@ -39,13 +39,21 @@ library(e1071)
 
 
 
-# 4. Conclusion
+# 4. Criticisms of Methodology
+try different cost and gamma parameters for svm tune
+try linear and radial svm kernels
 
 
 
 
 
-# 5. Appendix
+# 5. Conclusion
+
+
+
+
+
+# 6. Appendix
 
 ## Dataset Information
 
@@ -134,6 +142,35 @@ cat("Number of components required to reach 50% cumulative variance:", length(cu
 
 ## Support Vector Machines
 ```{r}
+
+# Setting seed for the chunk
+set.seed(123)
+
+# Extracting the first 8 principal components
+geneScores <- as.data.frame(pca$x[, 1:8])
+geneScores$Class <- as.factor(labels$Class)
+
+# Splitting data into training and test sets, 75-25 split
+trainIndices <- sample(1:nrow(geneScores), 0.75*nrow(geneScores), replace=FALSE)
+
+train <- geneScores[trainIndices,]
+test <- geneScores[-trainIndices,]
+
+# Training model and tuning hyperparameters with e1071::tune
+tuneRadialSVM <- tune(svm,
+                      train.x=train[, 1:8],
+                      train.y=train$Class,
+                      kernel="radial",
+                      type="C",
+                      ranges=list(cost=c(0.01, 0.1, 1, 5, 10, 50),
+                                  gamma=c(0.5, 1, 2, 3, 4)))
+summary(tuneRadialSVM)
+
+# Extracting best resulting model
+bestRadialSVM <- tuneRadialSVM$best.model
+summary(bestRadialSVM)
+
+#
 
 ```
 
