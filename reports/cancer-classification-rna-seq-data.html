@@ -11,7 +11,7 @@
 
 <meta name="author" content="B. D. Schedin" />
 
-<meta name="date" content="2021-08-26" />
+<meta name="date" content="2021-08-27" />
 
 <title>Cancer Classification With RNA-Seq Data</title>
 
@@ -191,7 +191,7 @@ summary {
 
 <h1 class="title toc-ignore">Cancer Classification With RNA-Seq Data</h1>
 <h4 class="author">B. D. Schedin</h4>
-<h4 class="date">August 26, 2021</h4>
+<h4 class="date">August 27, 2021</h4>
 
 </div>
 
@@ -206,6 +206,13 @@ summary {
 <li><a href="#dataset-information">Dataset Information</a></li>
 <li><a href="#preprocessing">Preprocessing</a></li>
 <li><a href="#principal-component-analysis-and-random-sampling">Principal Component Analysis and Random Sampling</a></li>
+<li><a href="#k-means-clustering">K-Means Clustering</a></li>
+<li><a href="#hierarchical-clustering">Hierarchical Clustering</a></li>
+<li><a href="#k-nearest-neighbors">K-Nearest Neighbors</a></li>
+<li><a href="#support-vector-machines">Support Vector Machines</a></li>
+<li><a href="#linear-discriminant-analysis">Linear Discriminant Analysis</a></li>
+<li><a href="#quadratic-discriminant-analysis">Quadratic Discriminant Analysis</a></li>
+<li><a href="#neural-network">Neural Network</a></li>
 </ul></li>
 </ul>
 </div>
@@ -290,6 +297,27 @@ ggplot(cumVarData, aes(x=PC, y=CumulativeVariance)) +
 # Number of features to reach 50% cumulative variance
 cat(&quot;Number of components required to reach 50% cumulative variance:&quot;, length(cumVar[cumVar &lt;= 0.50]), &quot;\n&quot;)</code></pre>
 <pre><code>## Number of components required to reach 50% cumulative variance: 8</code></pre>
+</div>
+<div id="k-means-clustering" class="section level2">
+<h2>K-Means Clustering</h2>
+</div>
+<div id="hierarchical-clustering" class="section level2">
+<h2>Hierarchical Clustering</h2>
+</div>
+<div id="k-nearest-neighbors" class="section level2">
+<h2>K-Nearest Neighbors</h2>
+</div>
+<div id="support-vector-machines" class="section level2">
+<h2>Support Vector Machines</h2>
+</div>
+<div id="linear-discriminant-analysis" class="section level2">
+<h2>Linear Discriminant Analysis</h2>
+</div>
+<div id="quadratic-discriminant-analysis" class="section level2">
+<h2>Quadratic Discriminant Analysis</h2>
+</div>
+<div id="neural-network" class="section level2">
+<h2>Neural Network</h2>
 </div>
 </div>
 

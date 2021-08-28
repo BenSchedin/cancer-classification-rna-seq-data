@@ -117,6 +117,41 @@ cat("Number of components required to reach 50% cumulative variance:", length(cu
 
 ```
 
+## K-Means Clustering 
+```{r}
+
+```
+
+## Hierarchical Clustering
+```{r}
+
+```
+
+## K-Nearest Neighbors
+```{r}
+
+```
+
+## Support Vector Machines
+```{r}
+
+```
+
+## Linear Discriminant Analysis
+```{r}
+
+```
+
+## Quadratic Discriminant Analysis
+```{r}
+
+```
+
+## Neural Network
+```{r}
+
+```
+
 
 
 
