@@ -95,7 +95,7 @@ save("data", "labels", file=paste0(projRoot, "data/processed/rna-seq-preprocesse
 ```
 
 ## Principal Component Analysis
-```{r}
+```{r, pca}
 
 # Setting chunk seed
 set.seed(123)
@@ -127,17 +127,17 @@ pca8 <- as.data.frame(pca$x[, 1:8])
 ```
 
 ## K-Means Clustering 
-```{r}
+```{r, kmeans}
 
 ```
 
 ## Hierarchical Clustering
-```{r}
+```{r, hclust}
 
 ```
 
 ## K-Nearest Neighbors
-```{r}
+```{r, knn}
 
 # Setting the seed for the chunk
 set.seed(123)
@@ -154,20 +154,42 @@ testData <- as.data.frame(pca8[testIndices, ])
 testLabels <- as.data.frame(labels[testIndices, ])
 colnames(testLabels) <- "Class"
 
-# Implementing KNN
-knn <- knn(trainData, testData, cl=trainLabels$Class, k=5)
+# Implementing KNN for k=1:100
+knnResults <- list()
+knnAccuracies <- list()
 
-# Reporting results
-predTable <- table(knn, testLabels[[1]])
-predTable
+for (i in 1:100)
+{
+  knnTemp <- knn(trainData, testData, cl=trainLabels$Class, k=i)
+  predTableTemp <- table(knnTemp, testLabels[[1]])
+  accuracy <- round(sum(diag(predTableTemp)) / nrow(testData), 4) * 100
+  cat("KNN Accuracy: ", accuracy, "%\n", sep="")
+  knnResults[[i]] <- predTableTemp
+  knnAccuracies[[i]] <- accuracy
+}
 
-# Calculating error
-round(sum(diag(predTable)) / nrow(testData), 2)
+knnAccuracies <- unlist(knnAccuracies)
+
+
+bestAccuracy <- max(knnAccuracies)
+bestIndex <- which(knnAccuracies == max(knnAccuracies))
+predTable <- knnResults[bestIndex]
+
+
+
+
+# Exporting results table to .csv file
+predTable <- as.data.frame.matrix(predTable)
+write.csv(predTable, file=paste0(projRoot, "tables/knn.csv"))
 
 ```
 
+Write about k value selection
+put k value in loop and plot error rate with increasing k values
+write prediction tables to file
+
 ## Support Vector Machines
-```{r}
+```{r, svm}
 
 # Setting chunk seed
 set.seed(123)
@@ -179,13 +201,13 @@ svmData$Class <- as.factor(labels$Class)
 # Splitting data into training and test sets, 75-25 split
 trainIndices <- sample(1:nrow(svmData), 0.75*nrow(svmData), replace=FALSE)
 
-train <- svmData[trainIndices,]
-test <- svmData[-trainIndices,]
+trainData <- svmData[trainIndices,]
+testData <- svmData[-trainIndices,]
 
 # Training model and tuning hyperparameters with e1071::tune
 tuneRadialSVM <- tune(svm,
-                      train.x=train[, 1:8],
-                      train.y=train$Class,
+                      train.x=trainData[, 1:8],
+                      train.y=trainData$Class,
                       kernel="radial",
                       type="C",
                       ranges=list(cost=c(0.01, 0.1, 1, 5, 10, 50),
@@ -197,29 +219,32 @@ bestRadialSVM <- tuneRadialSVM$best.model
 summary(bestRadialSVM)
 
 # Testing best model and displaying results
-yPred <- predict(bestRadialSVM, test[,1:8])
+yPred <- predict(bestRadialSVM, testData[,1:8])
 
-predTable <- table(predicted=yPred, truth=test$Class)
+predTable <- table(predicted=yPred, truth=testData$Class)
 predTable
 
-# Writing table to .csv for reporting
+# Calculating error rate
+cat("SVM Accuracy: ", round(sum(diag(predTable)) / nrow(testData), 4) * 100, "%\n", sep="")
+
+# Exporting results table to .csv file
 predTable <- as.data.frame.matrix(predTable)
 write.csv(predTable, file=paste0(projRoot, "tables/radial-svm.csv"))
 
 ```
 
 ## Linear Discriminant Analysis
-```{r}
+```{r, lda}
 
 ```
 
 ## Quadratic Discriminant Analysis
-```{r}
+```{r, qda}
 
 ```
 
 ## Neural Network
-```{r}
+```{r, nn}
 
 # Setting chunk seed
 set.seed(123)
