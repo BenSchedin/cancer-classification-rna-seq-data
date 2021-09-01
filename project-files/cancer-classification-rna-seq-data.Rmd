@@ -4,7 +4,14 @@ author: "B. D. Schedin"
 date: "`r format(Sys.time(), '%B %d, %Y')`"
 output: 
   html_document:
-      toc: true
+    df_print: paged
+    toc: yes
+    toc_float: yes
+    toc_depth: 3
+    theme: yeti
+    highlight: pygments
+    fig_caption: yes
+fontsize: 11pt
 ---
 
 ```{r setup, include=FALSE}
@@ -44,6 +51,7 @@ library(class)
 try different cost and gamma parameters for svm tune
 try linear and radial svm kernels
 add k-fold cv to nn implementation
+remove ci from knn 1:100 visual
 
 
 
@@ -137,7 +145,7 @@ pca8 <- as.data.frame(pca$x[, 1:8])
 ```
 
 ## K-Nearest Neighbors
-```{r knn}
+```{r knn, warning=FALSE}
 
 # Setting the seed for the chunk
 set.seed(123)
