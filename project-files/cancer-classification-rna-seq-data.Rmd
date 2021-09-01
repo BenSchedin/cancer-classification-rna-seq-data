@@ -60,7 +60,7 @@ add k-fold cv to nn implementation
 ## Dataset Information
 
 ## Preprocessing
-```{r, eval=FALSE}
+```{r preprocessing, eval=FALSE}
 
 # Loading raw data
 rawData <- read.csv(paste0(projRoot, "data/raw/data.csv"))
@@ -95,7 +95,7 @@ save("data", "labels", file=paste0(projRoot, "data/processed/rna-seq-preprocesse
 ```
 
 ## Principal Component Analysis
-```{r, pca}
+```{r pca}
 
 # Setting chunk seed
 set.seed(123)
@@ -127,17 +127,17 @@ pca8 <- as.data.frame(pca$x[, 1:8])
 ```
 
 ## K-Means Clustering 
-```{r, kmeans}
+```{r kmeans}
 
 ```
 
 ## Hierarchical Clustering
-```{r, hclust}
+```{r hclust}
 
 ```
 
 ## K-Nearest Neighbors
-```{r, knn}
+```{r knn}
 
 # Setting the seed for the chunk
 set.seed(123)
@@ -176,12 +176,12 @@ predTable <- knnResults[[bestIndex]]
 cat("Best model accuracy was ", bestAccuracy, "% with k=", bestIndex, "\n", sep="")
 predTable
 
+# Plotting results for k=1:100
 ggplot(data=NULL, aes(x=1:100, y=knnAccuracies)) +
-  geom_line() +
   geom_smooth() +
-  geom_point() +
   theme_bw() +
   labs(title="K-Nearest Neighbors, k=1:100", x="k", y="Accuracy")
+ggsave(paste0(projRoot, "figures/knn-accuracies.png"), device="png", width=5, height=4)
 
 # Exporting results table to .csv file
 predTable <- as.data.frame.matrix(predTable)
@@ -190,11 +190,9 @@ write.csv(predTable, file=paste0(projRoot, "tables/knn.csv"))
 ```
 
 Write about k value selection
-put k value in loop and plot error rate with increasing k values
-write prediction tables to file
 
 ## Support Vector Machines
-```{r, svm}
+```{r svm, warning=FALSE}
 
 # Setting chunk seed
 set.seed(123)
@@ -239,17 +237,17 @@ write.csv(predTable, file=paste0(projRoot, "tables/radial-svm.csv"))
 ```
 
 ## Linear Discriminant Analysis
-```{r, lda}
+```{r lda}
 
 ```
 
 ## Quadratic Discriminant Analysis
-```{r, qda}
+```{r qda}
 
 ```
 
 ## Neural Network
-```{r, nn}
+```{r nn}
 
 # Setting chunk seed
 set.seed(123)
