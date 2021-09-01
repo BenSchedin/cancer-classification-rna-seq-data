@@ -18,6 +18,7 @@ projRoot <- "C:/_git_/cancer-classification-rna-seq-data/"
 # Project libraries
 library(tidyverse)
 library(e1071)
+library(class)
 
 ```
 
@@ -137,6 +138,31 @@ pca8 <- as.data.frame(pca$x[, 1:8])
 
 ## K-Nearest Neighbors
 ```{r}
+
+# Setting the seed for the chunk
+set.seed(123)
+
+# Splitting th e data into training and test sets, 75-25 split
+trainIndices <- sample(1:nrow(pca8), floor(0.75 * nrow(pca8)), replace=FALSE)
+testIndices <- (1:nrow(pca8))[-trainIndices]
+
+trainData <- as.data.frame(pca8[trainIndices, ])
+trainLabels <- as.data.frame(labels[trainIndices, ])
+colnames(trainLabels) <- "Class"
+
+testData <- as.data.frame(pca8[testIndices, ])
+testLabels <- as.data.frame(labels[testIndices, ])
+colnames(testLabels) <- "Class"
+
+# Implementing KNN
+knn <- knn(trainData, testData, cl=trainLabels$Class, k=5)
+
+# Reporting results
+predTable <- table(knn, testLabels[[1]])
+predTable
+
+# Calculating error
+round(sum(diag(predTable)) / nrow(testData), 2)
 
 ```
 
