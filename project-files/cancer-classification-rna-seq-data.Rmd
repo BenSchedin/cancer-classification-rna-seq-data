@@ -163,20 +163,25 @@ for (i in 1:100)
   knnTemp <- knn(trainData, testData, cl=trainLabels$Class, k=i)
   predTableTemp <- table(knnTemp, testLabels[[1]])
   accuracy <- round(sum(diag(predTableTemp)) / nrow(testData), 4) * 100
-  cat("KNN Accuracy: ", accuracy, "%\n", sep="")
   knnResults[[i]] <- predTableTemp
   knnAccuracies[[i]] <- accuracy
 }
 
+# Displaying best model results for k=1:100
 knnAccuracies <- unlist(knnAccuracies)
-
-
 bestAccuracy <- max(knnAccuracies)
-bestIndex <- which(knnAccuracies == max(knnAccuracies))
-predTable <- knnResults[bestIndex]
+bestIndex <- which(knnAccuracies == max(knnAccuracies))[1]
+predTable <- knnResults[[bestIndex]]
 
+cat("Best model accuracy was ", bestAccuracy, "% with k=", bestIndex, "\n", sep="")
+predTable
 
-
+ggplot(data=NULL, aes(x=1:100, y=knnAccuracies)) +
+  geom_line() +
+  geom_smooth() +
+  geom_point() +
+  theme_bw() +
+  labs(title="K-Nearest Neighbors, k=1:100", x="k", y="Accuracy")
 
 # Exporting results table to .csv file
 predTable <- as.data.frame.matrix(predTable)
