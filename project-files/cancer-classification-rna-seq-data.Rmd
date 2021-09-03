@@ -114,19 +114,32 @@ data <- as.data.frame(data)
 
 # PCA on all features
 pca <- prcomp(data)
-plot(pca, main="Scree Plot", xlab="PCs")
 
+# Calculating cumulative variance for each principal component
 cumVar <- cumsum((nrow(data) - 1) * ((pca$sdev)^2)/sum(data^2))
 cumVarData <- data.frame(PC = 1:length(cumVar), CumulativeVariance = cumVar)
 
+# Plotting the cumulative variance
 ggplot(cumVarData, aes(x=PC, y=CumulativeVariance)) +
   geom_point() +
   geom_line() +
   theme_bw() +
   labs(title="Component Cumulative Variance", x="PC", y="Variance")
-ggsave(paste0(projRoot, "figures/pca-cumulative-variance.png"), device="png", width=5, height=4)
+ggsave(paste0(projRoot, "figures/pca-cumulative-variance.png"), device="png", width=6, height=4)
 
-# Number of features to reach 50% cumulative variance
+# Visualizing the first two component scores
+scores <- as.data.frame(pca$x[,1:2])
+scores$Class <- labels$Class
+
+ggplot(scores, aes(PC1, PC2, color=Class, shape=Class)) +
+  geom_point() +
+  geom_hline(yintercept=0, linetype="dotted") +
+  geom_vline(xintercept=0, linetype="dotted") +
+  theme_bw() +
+  labs(title="Scores: PC1 and PC2", x="PC1 Scores", y="PC2 Scores")
+ggsave(paste0(projRoot, "figures/pca-component-scores-plot.png"), device="png", width=6, height=4)
+
+# Determining the number of components needed to reach 50% cumulative variance
 cat("Number of components required to reach 50% cumulative variance:", length(cumVar[cumVar <= 0.50]), "\n")
 
 # Extracting the first 8 principal components
@@ -189,7 +202,7 @@ ggplot(data=NULL, aes(x=1:100, y=knnAccuracies)) +
   geom_smooth() +
   theme_bw() +
   labs(title="K-Nearest Neighbors, k=1:100", x="k", y="Accuracy")
-ggsave(paste0(projRoot, "figures/knn-accuracies.png"), device="png", width=5, height=4)
+ggsave(paste0(projRoot, "figures/knn-accuracies.png"), device="png", width=6, height=4)
 
 # Exporting results table to .csv file
 predTable <- as.data.frame.matrix(predTable)
