@@ -52,6 +52,7 @@ try different cost and gamma parameters for svm tune
 try linear and radial svm kernels
 add k-fold cv to nn implementation
 remove ci from knn 1:100 visual
+calculate error rate for k-means
 
 
 
@@ -149,6 +150,32 @@ pca8 <- as.data.frame(pca$x[, 1:8])
 
 ## K-Means Clustering 
 ```{r kmeans}
+
+# Setting chunk seed
+set.seed(123)
+
+# Applying k-means to the data
+k <- 5
+kmeans <- kmeans(pca8, centers=k, iter.max=100, nstart=25, algorithm=c("Hartigan-Wong"))
+
+# Visualizing the results
+kmeansResults <- data.frame(pca8)
+kmeansResults$Class <- as.factor(labels$Class)
+kmeansResults$Cluster <- as.factor(kmeans$cluster)
+
+ggplot(kmeansResults, aes(PC1, PC2)) +
+  geom_point(aes(color=Class, shape=Cluster)) +
+  theme_bw() +
+  labs(title=paste0(k, "-Means Clustering", sep=""), x="PC1", y="PC2")
+ggsave(paste0(projRoot, "figures/pca-kmeans.png"), device="png", width=6, height=4)
+
+# Displaying the results
+predTable <- table(kmeansResults$Class, kmeansResults$Cluster)
+predTable
+
+# Exporting results table to .csv file
+predTable <- as.data.frame.matrix(predTable)
+write.csv(predTable, file=paste0(projRoot, "tables/kmeans.csv"))
 
 ```
 
