@@ -26,6 +26,7 @@ projRoot <- "C:/_git_/cancer-classification-rna-seq-data/"
 library(tidyverse)
 library(e1071)
 library(class)
+library(ggdendro)
 
 ```
 
@@ -181,6 +182,19 @@ write.csv(predTable, file=paste0(projRoot, "tables/kmeans.csv"))
 
 ## Hierarchical Clustering
 ```{r hclust}
+
+# Setting chunk seed
+set.seed(123)
+
+# Applying hierarchical clustering with multiple linkages
+hcAverage <- hclust(dist(pca8), method="average")
+hcSingle <- hclust(dist(pca8), method="single")
+hcComplete <- hclust(dist(pca8), method="complete")
+
+# Visualizing results with dendrograms
+ggdendrogram(hcAverage, rotate=FALSE, size=2)
+ggdendrogram(hcSingle, rotate=FALSE, size=2)
+ggdendrogram(hcComplete, rotate=FALSE, size=2)
 
 ```
 
