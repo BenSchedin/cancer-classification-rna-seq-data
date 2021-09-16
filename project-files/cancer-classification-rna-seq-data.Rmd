@@ -53,8 +53,8 @@ try different cost and gamma parameters for svm tune
 try linear and radial svm kernels
 add k-fold cv to nn implementation
 remove ci from knn 1:100 visual
-calculate error rate for k-means
-
+add accuracy assessment to hclust
+update hclust plots
 
 
 
@@ -322,15 +322,23 @@ set.seed(123)
 
 # Preparing principal component data for use with NN
 nnData <- pca8
-nnLabels <- labels
+nnData$Class <- labels$Class
 
 # Splitting data into train and test sets, 75-25 split
-trainIndices <- sample(1:nrow(nnData), nrow(nnData), replace=FALSE)
+trainIndices <- sample(1:nrow(nnData), nrow(nnData)*0.75, replace=FALSE)
 
 trainData <- nnData[trainIndices,]
-trainLabels <- as.data.frame(nnLabels[trainIndices,])
 testData <- nnData[-trainIndices,]
-testLabels <- nnLabels[-trainIndices,]
+
+# Fitting the model
+nnet <- neuralnet(Class ~ ., trainData, hidden=c(10, 12), act.fct="logistic", linear.output=FALSE)
+
+# Assessing model accuracy
+yPred <- neuralnet::compute(nnet, testData)
+yHat <- yPred$net.result
+
+# Displaying the model
+plot(nnet, show.weights=FALSE, information=TRUE, intercept=FALSE, rep="best", col.hidden="blue")
 
 ```
 
