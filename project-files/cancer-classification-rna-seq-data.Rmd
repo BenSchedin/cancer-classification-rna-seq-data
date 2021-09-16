@@ -178,6 +178,12 @@ predTable
 predTable <- as.data.frame.matrix(predTable)
 write.csv(predTable, file=paste0(projRoot, "tables/kmeans.csv"))
 
+# Calculating "error" rate
+dominant <- sapply(predTable, function(x) max(x))
+total <- sapply(predTable, function(x) sum(x))
+
+cat("Accuracy (based on dominant class samples per cluster): ", round(sum(dominant) / sum(total), 4) * 100, "% \n", sep="")
+
 ```
 
 ## Hierarchical Clustering
@@ -204,7 +210,7 @@ ggdendrogram(hcComplete, rotate=FALSE, size=2)
 # Setting the seed for the chunk
 set.seed(123)
 
-# Splitting th e data into training and test sets, 75-25 split
+# Splitting the data into training and test sets, 75-25 split
 trainIndices <- sample(1:nrow(pca8), floor(0.75 * nrow(pca8)), replace=FALSE)
 testIndices <- (1:nrow(pca8))[-trainIndices]
 
