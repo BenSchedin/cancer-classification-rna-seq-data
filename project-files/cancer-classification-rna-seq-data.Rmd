@@ -29,6 +29,9 @@ library(class)
 library(ggdendro)
 library(neuralnet)
 
+# Sourced files
+source(paste0(projRoot, "r-code/functions/neural-net.R"))
+
 ```
 
 # 1. Abstract
@@ -56,6 +59,7 @@ add k-fold cv to nn implementation
 remove ci from knn 1:100 visual
 add accuracy assessment to hclust
 update hclust plots
+replace source files with github source compared to local source
 
 
 
@@ -324,6 +328,7 @@ set.seed(123)
 # Preparing principal component data for use with NN
 nnData <- pca8
 nnData$Class <- labels$Class
+nnData$Class <- as.factor(nnData$Class)
 
 # Splitting data into train and test sets, 75-25 split
 trainIndices <- sample(1:nrow(nnData), nrow(nnData)*0.75, replace=FALSE)
@@ -334,12 +339,12 @@ testData <- nnData[-trainIndices,]
 # Fitting the model
 nnet <- neuralnet(Class ~ ., trainData, hidden=c(10, 12), act.fct="logistic", linear.output=FALSE)
 
-# Assessing model accuracy
-yPred <- neuralnet::compute(nnet, testData)
-yHat <- yPred$net.result
-
 # Displaying the model
 plot(nnet, show.weights=FALSE, information=TRUE, intercept=FALSE, rep="best", col.hidden="blue")
+
+# Checking train and test set accuracies
+nnPred(testData, nnet)
+nnPred(trainData, nnet)
 
 ```
 
