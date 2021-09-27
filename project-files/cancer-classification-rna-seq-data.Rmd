@@ -31,6 +31,7 @@ library(neuralnet)
 
 # Sourced files
 source(paste0(projRoot, "r-code/functions/neural-net.R"))
+source(paste0(projRoot, "r-code/functions/diag-accuracy.R"))
 
 ```
 
@@ -342,9 +343,17 @@ nnet <- neuralnet(Class ~ ., trainData, hidden=c(10, 12), act.fct="logistic", li
 # Displaying the model
 plot(nnet, show.weights=FALSE, information=TRUE, intercept=FALSE, rep="best", col.hidden="blue")
 
-# Checking train and test set accuracies
-nnPred(testData, nnet)
-nnPred(trainData, nnet)
+# Checking train set accuracy
+trainPred <- nnPred(trainData, nnet)
+trainPred
+
+cat("Training model accuracy: ", accuracyDiag(trainPred), "%\n", sep="")
+
+# Checking test set accuracy
+testPred <- nnPred(testData, nnet)
+testPred
+
+cat("Test model accuracy: ", accuracyDiag(testPred), "%\n", sep="")
 
 ```
 
