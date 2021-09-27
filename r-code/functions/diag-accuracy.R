@@ -1,9 +1,10 @@
 accuracyDiag <- function(table)
 {
-    dominant <- sapply(table, function(x) max(x))
-    total <- sapply(table, function(x) sum(x))
+    matrix <- as.matrix(table)
+    diagSum <- sum(diag(matrix))
+    sumOfColSums <- sum(colSums(matrix))
 
-    accuracy <- round(sum(dominant) / sum(total), 4) * 100
+    accuracy <- round(diagSum / sumOfColSums, 4) * 100
 
     return(accuracy)
 }
