@@ -716,9 +716,13 @@ div.tocify {
 ##   PRAD    0    0    0    0   99</code></pre>
 <div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Training model accuracy: &quot;</span>, <span class="fu">accuracyDiag</span>(trainPred), <span class="st">&quot;%</span><span class="sc">\n</span><span class="st">&quot;</span>, <span class="at">sep=</span><span class="st">&quot;&quot;</span>)</span></code></pre></div>
 <pre><code>## Training model accuracy: 100%</code></pre>
-<div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Checking test set accuracy</span></span>
-<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>testPred <span class="ot">&lt;-</span> <span class="fu">nnPred</span>(testData, nnet)</span>
-<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>testPred</span></code></pre></div>
+<div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Exporting train results table to .csv file</span></span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>trainPred <span class="ot">&lt;-</span> <span class="fu">as.data.frame.matrix</span>(trainPred)</span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a><span class="fu">write.csv</span>(trainPred, <span class="at">file=</span><span class="fu">paste0</span>(projRoot, <span class="st">&quot;tables/neural-net-train.csv&quot;</span>))</span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Checking test set accuracy</span></span>
+<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a>testPred <span class="ot">&lt;-</span> <span class="fu">nnPred</span>(testData, nnet)</span>
+<span id="cb38-7"><a href="#cb38-7" aria-hidden="true" tabindex="-1"></a>testPred</span></code></pre></div>
 <pre><code>##       predicted
 ## truth  BRCA COAD KIRC LUAD PRAD
 ##   BRCA   78    0    0    0    0
@@ -728,6 +732,9 @@ div.tocify {
 ##   PRAD    0    0    0    0   37</code></pre>
 <div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Test model accuracy: &quot;</span>, <span class="fu">accuracyDiag</span>(testPred), <span class="st">&quot;%</span><span class="sc">\n</span><span class="st">&quot;</span>, <span class="at">sep=</span><span class="st">&quot;&quot;</span>)</span></code></pre></div>
 <pre><code>## Test model accuracy: 99.5%</code></pre>
+<div class="sourceCode" id="cb42"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Exporting test results table to .csv file</span></span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>testPred <span class="ot">&lt;-</span> <span class="fu">as.data.frame.matrix</span>(testPred)</span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a><span class="fu">write.csv</span>(testPred, <span class="at">file=</span><span class="fu">paste0</span>(projRoot, <span class="st">&quot;tables/neural-net-test.csv&quot;</span>))</span></code></pre></div>
 </div>
 </div>
 

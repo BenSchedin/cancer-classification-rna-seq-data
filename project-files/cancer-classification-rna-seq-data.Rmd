@@ -349,11 +349,19 @@ trainPred
 
 cat("Training model accuracy: ", accuracyDiag(trainPred), "%\n", sep="")
 
+# Exporting train results table to .csv file
+trainPred <- as.data.frame.matrix(trainPred)
+write.csv(trainPred, file=paste0(projRoot, "tables/neural-net-train.csv"))
+
 # Checking test set accuracy
 testPred <- nnPred(testData, nnet)
 testPred
 
 cat("Test model accuracy: ", accuracyDiag(testPred), "%\n", sep="")
+
+# Exporting test results table to .csv file
+testPred <- as.data.frame.matrix(testPred)
+write.csv(testPred, file=paste0(projRoot, "tables/neural-net-test.csv"))
 
 ```
 
