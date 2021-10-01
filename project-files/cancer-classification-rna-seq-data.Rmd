@@ -30,6 +30,7 @@ library(ggdendro)
 library(neuralnet)
 library(ggcorrplot)
 library(MASS)
+library(randomForest)
 
 # Sourced files
 source(paste0(projRoot, "r-code/functions/neural-net.R"))
@@ -63,6 +64,7 @@ remove ci from knn 1:100 visual
 add accuracy assessment to hclust
 update hclust plots
 replace source files with github source compared to local source
+double check and add model assumption analysis to lda/qda
 
 
 
@@ -427,8 +429,35 @@ write.csv(testPred, file=paste0(projRoot, "tables/neural-net-test.csv"))
 
 ## Random Forest
 
+```{r randforest}
+
+# Setting chunk seed
+set.seed(123)
+
+# Splitting the data into training and test sets, 75-25 split
+trainIndices <- sample(1:nrow(full), 0.75*nrow(full), replace=FALSE)
+
+trainData <- full[trainIndices, ]
+testData <- full[-trainIndices, ]
+
+# Building the model
+rf <- randomForest(Class ~ ., data=trainData, ntree=100)
+rfPred <- predict(rf, testData)
+
+# Reporting test accuracy
+testPred <- table(predicted=rfPred, truth=testData$Class)
+testPred
+
+cat("Test model accuracy: ", accuracyDiag(testPred), "%\n", sep="")
+
+```
+
+
 ## Multinomial Logistic Regression
 
+```{r mlr}
+
+```
 
 
 

@@ -360,7 +360,7 @@ div.tocify {
 </div>
 <div id="criticisms-of-methodology" class="section level1">
 <h1>4. Criticisms of Methodology</h1>
-<p>try different cost and gamma parameters for svm tune try linear and radial svm kernels add k-fold cv to nn implementation remove ci from knn 1:100 visual add accuracy assessment to hclust update hclust plots replace source files with github source compared to local source</p>
+<p>try different cost and gamma parameters for svm tune try linear and radial svm kernels add k-fold cv to nn implementation remove ci from knn 1:100 visual add accuracy assessment to hclust update hclust plots replace source files with github source compared to local source double check and add model assumption analysis to lda/qda</p>
 </div>
 <div id="conclusion" class="section level1">
 <h1>5. Conclusion</h1>
@@ -808,6 +808,31 @@ div.tocify {
 </div>
 <div id="random-forest" class="section level2">
 <h2>Random Forest</h2>
+<div class="sourceCode" id="cb55"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Setting chunk seed</span></span>
+<span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb55-3"><a href="#cb55-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb55-4"><a href="#cb55-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Splitting the data into training and test sets, 75-25 split</span></span>
+<span id="cb55-5"><a href="#cb55-5" aria-hidden="true" tabindex="-1"></a>trainIndices <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(full), <span class="fl">0.75</span><span class="sc">*</span><span class="fu">nrow</span>(full), <span class="at">replace=</span><span class="cn">FALSE</span>)</span>
+<span id="cb55-6"><a href="#cb55-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb55-7"><a href="#cb55-7" aria-hidden="true" tabindex="-1"></a>trainData <span class="ot">&lt;-</span> full[trainIndices, ]</span>
+<span id="cb55-8"><a href="#cb55-8" aria-hidden="true" tabindex="-1"></a>testData <span class="ot">&lt;-</span> full[<span class="sc">-</span>trainIndices, ]</span>
+<span id="cb55-9"><a href="#cb55-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb55-10"><a href="#cb55-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Building the model</span></span>
+<span id="cb55-11"><a href="#cb55-11" aria-hidden="true" tabindex="-1"></a>rf <span class="ot">&lt;-</span> <span class="fu">randomForest</span>(Class <span class="sc">~</span> ., <span class="at">data=</span>trainData, <span class="at">ntree=</span><span class="dv">100</span>)</span>
+<span id="cb55-12"><a href="#cb55-12" aria-hidden="true" tabindex="-1"></a>rfPred <span class="ot">&lt;-</span> <span class="fu">predict</span>(rf, testData)</span>
+<span id="cb55-13"><a href="#cb55-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb55-14"><a href="#cb55-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Reporting test accuracy</span></span>
+<span id="cb55-15"><a href="#cb55-15" aria-hidden="true" tabindex="-1"></a>testPred <span class="ot">&lt;-</span> <span class="fu">table</span>(<span class="at">predicted=</span>rfPred, <span class="at">truth=</span>testData<span class="sc">$</span>Class)</span>
+<span id="cb55-16"><a href="#cb55-16" aria-hidden="true" tabindex="-1"></a>testPred</span></code></pre></div>
+<pre><code>##          truth
+## predicted BRCA COAD KIRC LUAD PRAD
+##      BRCA   78    0    2    1    1
+##      COAD    0   21    0    0    0
+##      KIRC    0    0   32    0    0
+##      LUAD    0    2    0   28    0
+##      PRAD    0    0    0    0   36</code></pre>
+<div class="sourceCode" id="cb57"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Test model accuracy: &quot;</span>, <span class="fu">accuracyDiag</span>(testPred), <span class="st">&quot;%</span><span class="sc">\n</span><span class="st">&quot;</span>, <span class="at">sep=</span><span class="st">&quot;&quot;</span>)</span></code></pre></div>
+<pre><code>## Test model accuracy: 97.01%</code></pre>
 </div>
 <div id="multinomial-logistic-regression" class="section level2">
 <h2>Multinomial Logistic Regression</h2>
