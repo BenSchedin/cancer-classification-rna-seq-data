@@ -87,11 +87,11 @@ rawLabels <- read.csv(paste0(projRoot, "data/raw/labels.csv"))
 # Setting sample IDs to row names, removing sample ID columns
 data <- rawData
 rownames(data) <- rawData$X
-data <- data %>% select(-X)
+data <- data %>% dplyr::select(-X)
 
 labels <- rawLabels
 rownames(labels) <- rawLabels$X
-labels <- labels %>% select(-X)
+labels <- labels %>% dplyr::select(-X)
 
 # Checking for missing values
 missing <- sapply(data, function(x) sum(is.na(x)))
@@ -274,19 +274,14 @@ Write about k value selection
 ## Support Vector Machines
 ```{r svm, warning=FALSE}
 
-# TODO: update to use "full" rather than separate combination for svm
 # Setting chunk seed
 set.seed(123)
 
-# Preparing principal component data for use with SVM
-svmData <- pca8
-svmData$Class <- as.factor(labels$Class)
-
 # Splitting data into training and test sets, 75-25 split
-trainIndices <- sample(1:nrow(svmData), 0.75*nrow(svmData), replace=FALSE)
+trainIndices <- sample(1:nrow(full), 0.75*nrow(full), replace=FALSE)
 
-trainData <- svmData[trainIndices,]
-testData <- svmData[-trainIndices,]
+trainData <- full[trainIndices,]
+testData <- full[-trainIndices,]
 
 # Training model and tuning hyperparameters with e1071::tune
 tuneRadialSVM <- tune(svm,
@@ -320,14 +315,14 @@ write.csv(predTable, file=paste0(projRoot, "tables/radial-svm.csv"))
 ## Linear Discriminant Analysis
 ```{r lda}
 
-# Combining pca8 data with sample labels
-ldaData <- bind_cols(pca8, labels)
+# Setting the chunk seed
+set.seed(123)
 
 # Splitting data into training and test sets with 75-25 split
-trainIndices <- sample(1:nrow(ldaData), floor(0.75*nrow(ldaData)), replace=FALSE)
+trainIndices <- sample(1:nrow(full), floor(0.75*nrow(full)), replace=FALSE)
 
-trainData <- ldaData[trainIndices, ]
-testData <- ldaData[-trainIndices, ]
+trainData <- full[trainIndices, ]
+testData <- full[-trainIndices, ]
 
 # Building QDA model
 ldaTrain <- lda(Class ~ ., data=trainData)
@@ -360,9 +355,7 @@ ggcorrplot(compCor) +
 ggsave(paste0(projRoot, "figures/comp-correlations.png"), device="png", width=6, height=4)
 
 # Checking for GMM violations
-gmmData <- pca8
-gmmData$Class <- labels$Class
-gmmData <- reshape2::melt(gmmData, id="Class")
+gmmData <- reshape2::melt(full, id="Class")
 
 ggplot(gmmData, aes(x=value, fill=Class)) +
   geom_density(alpha=0.25) +
@@ -370,14 +363,11 @@ ggplot(gmmData, aes(x=value, fill=Class)) +
   labs(title="Class Distributions", x="Value", y="Density")
 ggsave(paste0(projRoot, "figures/comp-class-distributions.png"), device="png", width=6, height=4)
 
-# Combining pca8 data with sample labels
-qdaData <- bind_cols(pca8, labels)
-
 # Splitting data into training and test sets with 75-25 split
-trainIndices <- sample(1:nrow(qdaData), floor(0.75*nrow(qdaData)), replace=FALSE)
+trainIndices <- sample(1:nrow(full), floor(0.75*nrow(full)), replace=FALSE)
 
-trainData <- qdaData[trainIndices, ]
-testData <- qdaData[-trainIndices, ]
+trainData <- full[trainIndices, ]
+testData <- full[-trainIndices, ]
 
 # Building QDA model
 qdaTrain <- qda(Class ~ ., data=trainData)
@@ -401,16 +391,11 @@ write.csv(testPred, file=paste0(projRoot, "tables/qda-test.csv"))
 # Setting chunk seed
 set.seed(123)
 
-# Preparing principal component data for use with NN
-nnData <- pca8
-nnData$Class <- labels$Class
-nnData$Class <- as.factor(nnData$Class)
-
 # Splitting data into train and test sets, 75-25 split
-trainIndices <- sample(1:nrow(nnData), nrow(nnData)*0.75, replace=FALSE)
+trainIndices <- sample(1:nrow(full), nrow(full)*0.75, replace=FALSE)
 
-trainData <- nnData[trainIndices,]
-testData <- nnData[-trainIndices,]
+trainData <- full[trainIndices,]
+testData <- full[-trainIndices,]
 
 # Fitting the model
 nnet <- neuralnet(Class ~ ., trainData, hidden=c(10, 12), act.fct="logistic", linear.output=FALSE)
