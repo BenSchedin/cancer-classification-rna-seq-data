@@ -4,7 +4,7 @@ nnPred <- function(data, nn)
 
   labels <- c("BRCA", "COAD", "KIRC", "LUAD", "PRAD") 
   
-  prediction <- data.frame(max.col(prediction)) %>% mutate(prediction=labels[max.col.prediction.]) %>% select(2) %>% unlist() 
+  prediction <- data.frame(max.col(prediction)) %>% dplyr::mutate(prediction=labels[max.col.prediction.]) %>% dplyr::select(2) %>% unlist() 
 
   return(table(truth=data$Class, predicted=prediction)) 
 }

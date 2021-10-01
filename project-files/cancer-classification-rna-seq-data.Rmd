@@ -28,6 +28,8 @@ library(e1071)
 library(class)
 library(ggdendro)
 library(neuralnet)
+library(ggcorrplot)
+library(MASS)
 
 # Sourced files
 source(paste0(projRoot, "r-code/functions/neural-net.R"))
@@ -153,6 +155,10 @@ cat("Number of components required to reach 50% cumulative variance:", length(cu
 # Extracting the first 8 principal components
 pca8 <- as.data.frame(pca$x[, 1:8])
 
+# Combining selected components and labels to create a "full" data set
+full <- pca8
+full$Class <- as.factor(labels$Class)
+
 ```
 
 ## K-Means Clustering 
@@ -268,6 +274,7 @@ Write about k value selection
 ## Support Vector Machines
 ```{r svm, warning=FALSE}
 
+# TODO: update to use "full" rather than separate combination for svm
 # Setting chunk seed
 set.seed(123)
 
@@ -313,10 +320,78 @@ write.csv(predTable, file=paste0(projRoot, "tables/radial-svm.csv"))
 ## Linear Discriminant Analysis
 ```{r lda}
 
+# Combining pca8 data with sample labels
+ldaData <- bind_cols(pca8, labels)
+
+# Splitting data into training and test sets with 75-25 split
+trainIndices <- sample(1:nrow(ldaData), floor(0.75*nrow(ldaData)), replace=FALSE)
+
+trainData <- ldaData[trainIndices, ]
+testData <- ldaData[-trainIndices, ]
+
+# Building QDA model
+ldaTrain <- lda(Class ~ ., data=trainData)
+ldaTest <- predict(ldaTrain, newdata=testData)
+
+# Reporting test accuracy
+testPred <- table(testData$Class, ldaTest$class)
+testPred
+
+cat("Test model accuracy: ", accuracyDiag(testPred), "%\n", sep="")
+
+# Exporting test results to .csv file
+testPred <- as.data.frame.matrix(testPred)
+write.csv(testPred, file=paste0(projRoot, "tables/lda-test.csv"))
+
 ```
 
 ## Quadratic Discriminant Analysis
 ```{r qda}
+
+# Setting chunk seed
+set.seed(123)
+
+# Checking correlations between components
+compCor <- cor(pca8)
+
+ggcorrplot(compCor) + 
+  theme(axis.text.x = element_text(size=11, angle=90, hjust=0.99, vjust=0.3), axis.text.y=element_text(size=11)) + 
+  labs(title = "Component Correlations", x="Variable 1", y="Variable 2")
+ggsave(paste0(projRoot, "figures/comp-correlations.png"), device="png", width=6, height=4)
+
+# Checking for GMM violations
+gmmData <- pca8
+gmmData$Class <- labels$Class
+gmmData <- reshape2::melt(gmmData, id="Class")
+
+ggplot(gmmData, aes(x=value, fill=Class)) +
+  geom_density(alpha=0.25) +
+  theme_bw() +
+  labs(title="Class Distributions", x="Value", y="Density")
+ggsave(paste0(projRoot, "figures/comp-class-distributions.png"), device="png", width=6, height=4)
+
+# Combining pca8 data with sample labels
+qdaData <- bind_cols(pca8, labels)
+
+# Splitting data into training and test sets with 75-25 split
+trainIndices <- sample(1:nrow(qdaData), floor(0.75*nrow(qdaData)), replace=FALSE)
+
+trainData <- qdaData[trainIndices, ]
+testData <- qdaData[-trainIndices, ]
+
+# Building QDA model
+qdaTrain <- qda(Class ~ ., data=trainData)
+qdaTest <- predict(qdaTrain, newdata=testData)
+
+# Reporting test accuracy
+testPred <- table(testData$Class, qdaTest$class)
+testPred
+
+cat("Test model accuracy: ", accuracyDiag(testPred), "%\n", sep="")
+
+# Exporting test results to .csv file
+testPred <- as.data.frame.matrix(testPred)
+write.csv(testPred, file=paste0(projRoot, "tables/qda-test.csv"))
 
 ```
 
@@ -365,7 +440,9 @@ write.csv(testPred, file=paste0(projRoot, "tables/neural-net-test.csv"))
 
 ```
 
+## Random Forest
 
+## Multinomial Logistic Regression
 
 
 
