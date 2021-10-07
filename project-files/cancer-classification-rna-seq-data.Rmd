@@ -428,7 +428,6 @@ write.csv(testPred, file=paste0(projRoot, "tables/neural-net-test.csv"))
 ```
 
 ## Random Forest
-
 ```{r randforest}
 
 # Setting chunk seed
@@ -454,7 +453,6 @@ cat("Test model accuracy: ", accuracyDiag(testPred), "%\n", sep="")
 
 
 ## Multinomial Logistic Regression
-
 ```{r mlr}
 
 ```
