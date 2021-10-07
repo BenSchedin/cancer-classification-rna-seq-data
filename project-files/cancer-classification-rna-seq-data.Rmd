@@ -55,9 +55,12 @@ source(paste0(projRoot, "r-code/functions/diag-accuracy.R"))
 
 
 # 3. Methods and Results
+### Plan
+
 ### Data Preprocessing
 
 ### Dimension Reduction
+
 
 ### Model Selection
 
@@ -67,14 +70,15 @@ source(paste0(projRoot, "r-code/functions/diag-accuracy.R"))
 
 
 # 4. Limitations
-try different cost and gamma parameters for svm tune
-try linear and radial svm kernels
-add k-fold cv to nn implementation
-remove ci from knn 1:100 visual
-add accuracy assessment to hclust
-update hclust plots
-replace source files with github source compared to local source
-double check and add model assumption analysis to lda/qda
+try different cost and gamma parameters for svm tune  
+try linear and radial svm kernels  
+add k-fold cv to nn implementation  
+remove ci from knn 1:100 visual  
+add accuracy assessment to hclust  
+update hclust plots  
+replace source files with github source compared to local source  
+double check and add model assumption analysis to lda/qda  
+how many components to select for? perform classification with varying number of PCs to test accuracy increase?  
 
 
 
@@ -88,7 +92,7 @@ double check and add model assumption analysis to lda/qda
 # 6. Appendix
 
 ## Preprocessing
-The initial step in this analysis was to load the data into R and prepare it for use during the rest of the analysis. This preprocessing step included cleaning up unneeded columns, checking the data for missing values, removing genes which appear to be inactive (defined as genes with $expression = 0$ for $> 25\%$ of the available samples), and standardizing the features with the `scale` function. The scaling would prove to be unnecessary, as PCA was applied to the data for dimension reduction which includes scaling; however, the data was still scaled in case ad-hoc processing of the original data was desired.
+The initial step in this analysis was to load the data into R and prepare it for use during the rest of the analysis. This preprocessing step included cleaning up unneeded columns, checking the data for missing values, removing genes which appear to be inactive (defined as genes with $expression = 0$ for $\geq 25\%$ of the available samples), and standardizing the features with the `scale` function. The scaling would prove to be unnecessary, as PCA was applied to the data for dimension reduction which includes scaling; however, the data was still scaled in case ad-hoc processing of the original data was desired.
 ```{r preprocessing, eval=FALSE}
 
 # Loading raw data
@@ -122,10 +126,11 @@ data <- scale(data)
 save("data", "labels", file=paste0(projRoot, "data/processed/rna-seq-preprocessed"))
 
 ```
-In total: No columns were found to have missing values, and 3,790 genes were removed from the data set. This preprocessed data was then saved to disk using the built-in `save` function for later use and quicker load times on supsequent loads.
+In total: No columns were found to have missing values, and 3,790 genes whose expressions were 0 in more than 25% of samples were removed from the data set. The resulting preprocessed data set contained 801 observations of 16,741 variables in the `data` object, and 801 observations of matching labels found in the `labels` object. This data was then saved to disk using the built-in `save` function for later use and quicker load times on subsequent loads.
 
 
 ## Principal Component Analysis
+Following preprocessing, PCA was applied to the data using the `stats::prcomp` method. This was performed for two reasons. First and foremost, PCA was applied to reduce the dimensionality of the data. With the original data consisting of 20,532 columns (and the preprocessed data consisting of 16,741 columns), the cost of running a multitude of machine learning algorithms against the data would have been expensive. Second, PCA was applied to the data to reduce noise. Given the large number of columns, it was impossible to conclude that all genes expressed in ways that yielded equal predictive power. Performing PCA allowed for dimension reduction with the added benefit of selecting for linear combinations of genes which expressed the highest variance.
 ```{r pca}
 
 # Setting chunk seed
@@ -173,6 +178,9 @@ full <- pca8
 full$Class <- as.factor(labels$Class)
 
 ```
+After performing principal component analysis, a plot was created which visualized the cumulative variance of each component produced. From this plot it is clear that the first few components account for a relatively large proportion of the total variance. With that in mind, a cumulative variance threshold of $50\%$ was chosen to select an initial number of components to work with. This cutoff was somewhat arbitrary, but ultimately ended up yielding very high ($>95\%$) classification rates, and also greatly reduced the number of columns that needed to be processed.
+
+A plot of the scores from PC1 and PC2 was also created to see if any groupings were obvious in the components.
 
 ## K-Means Clustering 
 ```{r kmeans}
