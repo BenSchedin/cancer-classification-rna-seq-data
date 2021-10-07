@@ -45,18 +45,28 @@ source(paste0(projRoot, "r-code/functions/diag-accuracy.R"))
 
 
 # 2. Introduction
+### Data Set
 
+### Goal
 
+### Existing Methods in Research
 
+### Findings
 
 
 # 3. Methods and Results
+### Data Preprocessing
+
+### Dimension Reduction
+
+### Model Selection
+
+### Results
 
 
 
 
-
-# 4. Criticisms of Methodology
+# 4. Limitations
 try different cost and gamma parameters for svm tune
 try linear and radial svm kernels
 add k-fold cv to nn implementation
@@ -77,9 +87,8 @@ double check and add model assumption analysis to lda/qda
 
 # 6. Appendix
 
-## Dataset Information
-
 ## Preprocessing
+The initial step in this analysis was to load the data into R and prepare it for use during the rest of the analysis. This preprocessing step included cleaning up unneeded columns, checking the data for missing values, removing genes which appear to be inactive (defined as genes with $expression = 0$ for $> 25\%$ of the available samples), and standardizing the features with the `scale` function. The scaling would prove to be unnecessary, as PCA was applied to the data for dimension reduction which includes scaling; however, the data was still scaled in case ad-hoc processing of the original data was desired.
 ```{r preprocessing, eval=FALSE}
 
 # Loading raw data
@@ -113,6 +122,8 @@ data <- scale(data)
 save("data", "labels", file=paste0(projRoot, "data/processed/rna-seq-preprocessed"))
 
 ```
+In total: No columns were found to have missing values, and 3,790 genes were removed from the data set. This preprocessed data was then saved to disk using the built-in `save` function for later use and quicker load times on supsequent loads.
+
 
 ## Principal Component Analysis
 ```{r pca}
@@ -449,8 +460,11 @@ testPred
 
 cat("Test model accuracy: ", accuracyDiag(testPred), "%\n", sep="")
 
-```
+# Exporting classification table to file
+testPred <- as.data.frame.matrix(testPred)
+write.csv(testPred, file=paste0(projRoot, "tables/random-forest-results.csv"))
 
+```
 
 ## Multinomial Logistic Regression
 ```{r mlr}
