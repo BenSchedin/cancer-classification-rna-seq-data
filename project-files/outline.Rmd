@@ -50,8 +50,8 @@ rf
 mlr  
 
 # V. CONCLUSION
-exploratory analysis
-lda vs qda
+exploratory analysis  
+lda vs qda  
 
 # VI. APPENDIX
 
