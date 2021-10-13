@@ -39,68 +39,14 @@ source(paste0(projRoot, "r-code/functions/diag-accuracy.R"))
 ```
 
 # I. Abstract
-The ability to classify cancer types based on gene expressions constitutes a valuable tool for both researchers and clinicians alike. In this analysis, various cancer classification methods are applied to genetic data to determine the performance of each method with various configurations.
-
 
 
 
 # 2. Introduction
 
-### Intro
-
-### Data Set
-
-### Goal
-
-### Existing Methods in Research
-
-### Findings
 
 
 # 3. Methods and Results
-### Plan
-
-### Data Preprocessing
-
-### Dimension Reduction
-
-
-### Model Selection
-
-### Results
-
-
-
-
-
-
-
-
-# I. ABSTRACT
-intro (1-2 sentences)
-methods (1-2 sentences)
-results (1-2 sentences)
-conclusion (1-2 sentences)
-
-# II. INTRODUCTION
-relevance
-goal
-existing methods
-data set
-models
-results
-
-# III. METHODOLOGY
-
-# IV. RESULTS
-
-# V. CONCLUSION
-
-# VI. APPENDIX
-
-# VII. REFERENCES
-
-
 
 
 

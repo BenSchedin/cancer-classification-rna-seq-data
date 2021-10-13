@@ -19,24 +19,39 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 # I. ABSTRACT
-intro (1-2 sentences)
-methods (1-2 sentences)
-results (1-2 sentences)
-conclusion (1-2 sentences)
+intro (1-2 sentences)  
+methods (1-2 sentences)  
+results (1-2 sentences)  
+conclusion (1-2 sentences)  
 
 # II. INTRODUCTION
-relevance
-goal
-existing methods
-data set
-models
-results
+relevance/context  
+goal  
+data Set  
+existing methods in publication  
+models  
+findings  
 
 # III. METHODOLOGY
+data preprocessing  
+dimension reduction  
+exploratory analysis  
+classification models (selection and implementation)    
 
 # IV. RESULTS
+k-means  
+h-clust  
+knn  
+svm  
+lda  
+qda  
+nn  
+rf  
+mlr  
 
 # V. CONCLUSION
+exploratory analysis
+lda vs qda
 
 # VI. APPENDIX
 
