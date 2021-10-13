@@ -1,0 +1,43 @@
+---
+title: "Cancer Classification With RNA-Seq Data - Outline"
+author: "B. D. Schedin"
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+output: 
+  html_document:
+    df_print: paged
+    toc: yes
+    toc_float: yes
+    toc_depth: 3
+    theme: yeti
+    highlight: pygments
+    fig_caption: yes
+fontsize: 11pt
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# I. ABSTRACT
+intro (1-2 sentences)
+methods (1-2 sentences)
+results (1-2 sentences)
+conclusion (1-2 sentences)
+
+# II. INTRODUCTION
+relevance
+goal
+existing methods
+data set
+models
+results
+
+# III. METHODOLOGY
+
+# IV. RESULTS
+
+# V. CONCLUSION
+
+# VI. APPENDIX
+
+# VII. REFERENCES

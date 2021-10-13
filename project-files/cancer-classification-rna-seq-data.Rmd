@@ -38,13 +38,16 @@ source(paste0(projRoot, "r-code/functions/diag-accuracy.R"))
 
 ```
 
-# 1. Abstract
-
+# I. Abstract
+The ability to classify cancer types based on gene expressions constitutes a valuable tool for both researchers and clinicians alike. In this analysis, various cancer classification methods are applied to genetic data to determine the performance of each method with various configurations.
 
 
 
 
 # 2. Introduction
+
+### Intro
+
 ### Data Set
 
 ### Goal
@@ -65,6 +68,38 @@ source(paste0(projRoot, "r-code/functions/diag-accuracy.R"))
 ### Model Selection
 
 ### Results
+
+
+
+
+
+
+
+
+# I. ABSTRACT
+intro (1-2 sentences)
+methods (1-2 sentences)
+results (1-2 sentences)
+conclusion (1-2 sentences)
+
+# II. INTRODUCTION
+relevance
+goal
+existing methods
+data set
+models
+results
+
+# III. METHODOLOGY
+
+# IV. RESULTS
+
+# V. CONCLUSION
+
+# VI. APPENDIX
+
+# VII. REFERENCES
+
 
 
 
@@ -182,7 +217,10 @@ After performing principal component analysis, a plot was created which visualiz
 
 A plot of the scores from PC1 and PC2 was also created to see if any groupings were obvious in the components. From the plot scores plot, `COAD`, `KIRC`, and `BRCA` form fairly distinct clusters. Conversely, `LUAD` and `PRAD` samples exhibit significant overlap between samples. Overall, the most separable classes are `KIRC`, `COAD`, `BRCA`, `LUAD`, and `PRAD` in descending order. TODO: quantify separability/cluster signatures?
 
-## K-Means Clustering 
+## k-Means Clustering
+Before performing traditional classifications, clustering was applied to the data to see how accurately natural groupings could be formed. The first clustering algorithm applied was k-Means Clustering. The accuracy of these groupings was assessed by choosing the dominant in-cluster class as the sample label. All other samples assigned to each cluster was considered to be an error. The clustering results can be seen in the following plot (with the cluster assignment resulting from the algorithm represented as shapes and the true class label represented by color), as well as in the classification results table.
+
+TODO: add methods for choosing 'k'
 ```{r kmeans}
 
 # Setting chunk seed
@@ -218,6 +256,7 @@ total <- sapply(predTable, function(x) sum(x))
 cat("Accuracy (based on dominant class samples per cluster): ", round(sum(dominant) / sum(total), 4) * 100, "% \n", sep="")
 
 ```
+With $k=5$, the k-Means algorithm was able to successfully group 91.01% of the samples indicating that the sample classes are fairly distinct. The cluster plot shows this visually, with most sample classes (colors) matching the assigned clusters (shapes).
 
 ## Hierarchical Clustering
 ```{r hclust}
@@ -237,7 +276,7 @@ ggdendrogram(hcComplete, rotate=FALSE, size=2)
 
 ```
 
-## K-Nearest Neighbors
+## k-Nearest Neighbors
 ```{r knn, warning=FALSE}
 
 # Setting the seed for the chunk
@@ -478,7 +517,6 @@ write.csv(testPred, file=paste0(projRoot, "tables/random-forest-results.csv"))
 ```{r mlr}
 
 ```
-
 
 
 
