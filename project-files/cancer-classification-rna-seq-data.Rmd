@@ -178,9 +178,9 @@ full <- pca8
 full$Class <- as.factor(labels$Class)
 
 ```
-After performing principal component analysis, a plot was created which visualized the cumulative variance of each component produced. From this plot it is clear that the first few components account for a relatively large proportion of the total variance. With that in mind, a cumulative variance threshold of $50\%$ was chosen to select an initial number of components to work with. This cutoff was somewhat arbitrary, but ultimately ended up yielding very high ($>95\%$) classification rates, and also greatly reduced the number of columns that needed to be processed.
+After performing principal component analysis, a plot was created which visualized the cumulative variance of each component produced. From this plot it is clear that the first few components account for a relatively large proportion of the total variance. With that in mind, a cumulative variance threshold of $50\%$ was chosen to select an initial number of components to work with. This cutoff was somewhat arbitrary, but ultimately ended up yielding very high ($>95\%$) classification rates across classifiers, and also greatly reduced the number of columns that needed to be processed.
 
-A plot of the scores from PC1 and PC2 was also created to see if any groupings were obvious in the components.
+A plot of the scores from PC1 and PC2 was also created to see if any groupings were obvious in the components. From the plot scores plot, `COAD`, `KIRC`, and `BRCA` form fairly distinct clusters. Conversely, `LUAD` and `PRAD` samples exhibit significant overlap between samples. Overall, the most separable classes are `KIRC`, `COAD`, `BRCA`, `LUAD`, and `PRAD` in descending order. TODO: quantify separability/cluster signatures?
 
 ## K-Means Clustering 
 ```{r kmeans}
