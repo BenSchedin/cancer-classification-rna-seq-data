@@ -279,6 +279,7 @@ write.csv(predTable, file=paste0(projRoot, "tables/knn.csv"))
 Out of the 100 models created, the model with $k=2$ performed the best with a test accuracy of 98.51%. Only 3 samples were classified incorrectly with 1 `KIRC` sample being classified as `BRCA`, 1 `LUAD` sample being classified as `BRCA`, and 1 `BRCA` sample being classified as `LUAD`. The results for each model for $1 \le k \le 100$ also showed a decrease in test accuracy as the local neighborhood size (`k`) increased, falling from $\approx 98 \%$ at $k=1$ to $\approx 96 \%$ at $k=100$. This indicates that cluster groupings, while relatively homogeneous, are close to other clusters in terms of euclidean distance. Furthermore, the most frequently misclassified class (`BRCA`) demonstrated with most overlap with other classes in both PCA and k-Means results.
 
 ## Support Vector Machines
+Support Vector Machines (SVM) was applied to the data with 75% of samples used for training and the remaining 25% used for testing. In order to tune the hyperparameters for the model, `e1071::tune` was used with $cost = {0.01, 0.1, 1, 5, 10, 50}$
 ```{r svm, warning=FALSE}
 
 # Setting chunk seed
