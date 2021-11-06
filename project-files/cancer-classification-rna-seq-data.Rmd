@@ -279,7 +279,7 @@ write.csv(predTable, file=paste0(projRoot, "tables/knn.csv"))
 Out of the 100 models created, the model with $k=2$ performed the best with a test accuracy of 98.51%. Only 3 samples were classified incorrectly with 1 `KIRC` sample being classified as `BRCA`, 1 `LUAD` sample being classified as `BRCA`, and 1 `BRCA` sample being classified as `LUAD`. The results for each model for $1 \le k \le 100$ also showed a decrease in test accuracy as the local neighborhood size (`k`) increased, falling from $\approx 98 \%$ at $k=1$ to $\approx 96 \%$ at $k=100$. This indicates that cluster groupings, while relatively homogeneous, are close to other clusters in terms of euclidean distance. Furthermore, the most frequently misclassified class (`BRCA`) demonstrated with most overlap with other classes in both PCA and k-Means results.
 
 ## Support Vector Machines
-Support Vector Machines (SVM) was applied to the data with 75% of samples used for training and the remaining 25% used for testing. In order to tune the hyperparameters for the model, `e1071::tune` was used with $cost = {0.01, 0.1, 1, 5, 10, 50}$
+Support Vector Machines (SVM) was applied to the data with both linear and radial kernels using 75% of the samples for training and the remaining 25% for testing. In order to tune the hyperparameters for the models, `e1071::tune` was used with $cost = \{0.01, 0.1, 1, 5, 10, 50\}$ and $\gamma=\{0.5, 1, 2, 3, 4\}$ for both kernels.
 ```{r svm, warning=FALSE}
 
 # Setting chunk seed
@@ -291,11 +291,40 @@ trainIndices <- sample(1:nrow(full), 0.75*nrow(full), replace=FALSE)
 trainData <- full[trainIndices,]
 testData <- full[-trainIndices,]
 
-# Training model and tuning hyperparameters with e1071::tune
+# Training model and tuning hyperparameters with e1071::tune with linear kernel
+tuneLinearSVM <- tune(svm,
+                      train.x=trainData[, 1:8],
+                      train.y=trainData$Class,
+                      kernel="linear",
+                      type="C",
+                      ranges=list(cost=c(0.01, 0.1, 1, 5, 10, 50),
+                                  gamma=c(0.5, 1, 2, 3, 4)))
+summary(tuneLinearSVM)
+
+# Extracting best resulting model
+bestLinearSVM <- tuneLinearSVM$best.model
+summary(bestLinearSVM)
+
+# Testing best model and displaying results
+yPred <- predict(bestLinearSVM, testData[,1:8])
+
+predTable <- table(predicted=yPred, truth=testData$Class)
+predTable
+
+# Calculating error rate
+cat("Linear SVM Accuracy: ", round(sum(diag(predTable)) / nrow(testData), 4) * 100, "%\n", sep="")
+
+# Exporting results table to .csv file
+predTable <- as.data.frame.matrix(predTable)
+write.csv(predTable, file=paste0(projRoot, "tables/linear-svm.csv"))
+
+
+
+# Training model and tuning hyperparameters with e1071::tune with radial kernel
 tuneRadialSVM <- tune(svm,
                       train.x=trainData[, 1:8],
                       train.y=trainData$Class,
-                      kernel="radial",
+                      kernel="linear",
                       type="C",
                       ranges=list(cost=c(0.01, 0.1, 1, 5, 10, 50),
                                   gamma=c(0.5, 1, 2, 3, 4)))
@@ -312,13 +341,15 @@ predTable <- table(predicted=yPred, truth=testData$Class)
 predTable
 
 # Calculating error rate
-cat("SVM Accuracy: ", round(sum(diag(predTable)) / nrow(testData), 4) * 100, "%\n", sep="")
+cat("Radial SVM Accuracy: ", round(sum(diag(predTable)) / nrow(testData), 4) * 100, "%\n", sep="")
 
 # Exporting results table to .csv file
 predTable <- as.data.frame.matrix(predTable)
 write.csv(predTable, file=paste0(projRoot, "tables/radial-svm.csv"))
 
 ```
+
+The best resulting linear model from 10-fold cross validation utilized $cost = 10$ and $\gamma=0.5$, had 42 support vectors, and produced a test accuracy of 98.51%. For the radial kernel, the model utilized $cost = 0.1$ and $\gamma = 0.5$, had 94 support vectors, and produced a test accuracy of 99%. This indicated that the data is not perfectly linearly separable, and benefited from projection prior to classification. 
 
 ## Linear Discriminant Analysis
 ```{r lda}
@@ -458,11 +489,6 @@ cat("Test model accuracy: ", accuracyDiag(testPred), "%\n", sep="")
 # Exporting classification table to file
 testPred <- as.data.frame.matrix(testPred)
 write.csv(testPred, file=paste0(projRoot, "tables/random-forest-results.csv"))
-
-```
-
-## Multinomial Logistic Regression
-```{r mlr}
 
 ```
 
