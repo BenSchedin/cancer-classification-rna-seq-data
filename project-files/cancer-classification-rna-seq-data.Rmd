@@ -203,6 +203,7 @@ cat("Accuracy (based on dominant class samples per cluster): ", round(sum(domina
 With $k=5$, the k-Means algorithm was able to successfully group 91.01% of the samples indicating that the sample classes are fairly distinct. The cluster plot shows this visually, with most sample classes (colors) matching the assigned clusters (shapes).
 
 ## Hierarchical Clustering
+TODO: add hclust intro
 ```{r hclust}
 
 # Setting chunk seed
@@ -219,8 +220,10 @@ ggdendrogram(hcSingle, rotate=FALSE, size=2)
 ggdendrogram(hcComplete, rotate=FALSE, size=2)
 
 ```
+TODO: add hclust results
 
 ## k-Nearest Neighbors
+The first supervised classification method used in this analysis was k-Nearest Neighbors (kNN). TODO: explain why this method was used. For this application of kNN, 75% of the samples were used to train the model with the remaining 25% being used for testing. In order to determine the best value for `k`, 100 models were created for $1 \le k \le 100$ and the model with the highest accuracy was used to report the final results. A visualization of the model accuracies for $1 \le k \le 100$ was also created and can be seen below. Note: Smoothing was applied to the visual, with 95% confidence intervals for the true value shown in gray.
 ```{r knn, warning=FALSE}
 
 # Setting the seed for the chunk
@@ -273,7 +276,7 @@ write.csv(predTable, file=paste0(projRoot, "tables/knn.csv"))
 
 ```
 
-Write about k value selection
+Out of the 100 models created, the model with $k=2$ performed the best with a test accuracy of 98.51%. Only 3 samples were classified incorrectly with 1 `KIRC` sample being classified as `BRCA`, 1 `LUAD` sample being classified as `BRCA`, and 1 `BRCA` sample being classified as `LUAD`. The results for each model for $1 \le k \le 100$ also showed a decrease in test accuracy as the local neighborhood size (`k`) increased, falling from $\approx 98 \%$ at $k=1$ to $\approx 96 \%$ at $k=100$. This indicates that cluster groupings, while relatively homogeneous, are close to other clusters in terms of euclidean distance. Furthermore, the most frequently misclassified class (`BRCA`) demonstrated with most overlap with other classes in both PCA and k-Means results.
 
 ## Support Vector Machines
 ```{r svm, warning=FALSE}
