@@ -49,22 +49,74 @@ source(paste0(projRoot, "r-code/functions/diag-accuracy.R"))
 ```
 
 # I. ABSTRACT
+goal
+reason for importance
+conclusion
+
+
 
 
 
 # II. INTRODUCTION
+restate goal
+existing methods
+methods used here
+final results
+conclusion
+
 
 
 
 # III. METHODOLOGY
+steps taken
+random seed
+sampling
+train-test splits
+test accuracy calculation and reporting
+
+### Preprocessing
+
+### Dimension Reduction
+pca
+
+### Cluster Analysis
+kmeans
+hclust
+
+### Classification
+knn
+svm
+lda
+qda
+dnn
+rf
+
+
 
 
 
 # IV. RESULTS
+### Cluster Analysis
+
+### k-Nearest Neighbors
+
+### Support Vector Machines
+
+### Linear Discriminant Analysis
+
+### Quadratic Discriminant Analysis
+
+### Deep Neural Network
+
+### Random Forest
+
+
 
 
 
 # V. CONCLUSION
+
+
 
 
 
@@ -424,7 +476,7 @@ write.csv(testPred, file=paste0(projRoot, "tables/qda-test.csv"))
 
 ```
 
-## Neural Network
+## Deep Neural Network
 ```{r nn}
 
 # Setting chunk seed
