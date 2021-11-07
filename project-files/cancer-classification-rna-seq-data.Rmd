@@ -492,7 +492,9 @@ testData <- full[-trainIndices,]
 nnet <- neuralnet(Class ~ ., trainData, hidden=c(10, 12), act.fct="logistic", linear.output=FALSE)
 
 # Displaying the model
+png(paste0(projRoot, "figures/dnn-architecture.png"))
 plot(nnet, show.weights=FALSE, information=TRUE, intercept=FALSE, rep="best", col.hidden="blue")
+dev.off()
 
 # Checking train set accuracy
 trainPred <- nnPred(trainData, nnet)
