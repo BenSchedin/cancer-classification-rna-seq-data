@@ -115,6 +115,9 @@ rf
 
 
 # V. CONCLUSION
+lda performed worse than qda, which is unsurprising considering the radial svm outperformed linear svm. this indicates that the best fit for the data is non-linear, though linear methods also produce good results (>95%).
+
+why did lda outperform linear svm?
 
 
 
@@ -404,6 +407,7 @@ write.csv(predTable, file=paste0(projRoot, "tables/radial-svm.csv"))
 The best resulting linear model from 10-fold cross validation utilized $cost = 10$ and $\gamma=0.5$, had 42 support vectors, and produced a test accuracy of 98.51%. For the radial kernel, the model utilized $cost = 0.1$ and $\gamma = 0.5$, had 94 support vectors, and produced a test accuracy of 99%. This indicated that the data is not perfectly linearly separable, and benefited from projection prior to classification. 
 
 ## Linear Discriminant Analysis
+The data is applied to linear discriminant analysis (LDA) below to determine the accuracy of classification by finding linear decision boundaries that separate linear combinations of features which best represent the data. Similar to previous model implementations, the data is randomly split with 75% of the samples used for training and the remaining 25% used for testing.
 ```{r lda}
 
 # Setting the chunk seed
@@ -415,7 +419,7 @@ trainIndices <- sample(1:nrow(full), floor(0.75*nrow(full)), replace=FALSE)
 trainData <- full[trainIndices, ]
 testData <- full[-trainIndices, ]
 
-# Building QDA model
+# Building LDA model
 ldaTrain <- lda(Class ~ ., data=trainData)
 ldaTest <- predict(ldaTrain, newdata=testData)
 
@@ -430,6 +434,8 @@ testPred <- as.data.frame.matrix(testPred)
 write.csv(testPred, file=paste0(projRoot, "tables/lda-test.csv"))
 
 ```
+
+From the results, LDA was able to predict the sample classes of the test set with 99% accuracy. Two samples were misclassified with 1 `KIRC` sample being classified as `LUAD` and 1 `COAD` sample being classified as `BRCA`.
 
 ## Quadratic Discriminant Analysis
 ```{r qda}
